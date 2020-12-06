@@ -1,0 +1,56 @@
+.activitySummary {
+  background-color: #F3F5F7;
+  border-radius: 4px;
+  text-align: left;
+  min-width: 420px;
+  height: 85%;
+  padding-bottom: 0.2rem;
+}
+.moveSummary {
+  height: 33.33%;
+  display: flex;
+  }
+.exerciseSummary, .standSummary {
+  height: 33.33%;
+  border-top: 1px solid rgba(162, 164, 163, 0.1);
+  display: flex;
+}
+.activityTitle {
+  width: 10%;
+  min-width: 35px;
+  margin: 1%;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  text-align: center;
+  transform: rotate(-180deg);
+  writing-mode: vertical-rl;
+}
+.activityGauge {
+  width: 12%;
+  min-width: 56px;
+  float: left;
+  min-height: 100px;
+  vertical-align: middle;
+}
+.activityGraph {
+  width: 78%;
+  min-width: 325px;
+}
+#unit {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: 0.6rem;
+}
+.activityGaugeText {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 500;
+}
+
+#gaugeMove, #gaugeExercise, #gaugeStand {
+  width: 100%;
+}
+#graphMove, #graphExercise, #graphStand {
+  width: 95%;
+  height: 80%;
+  margin: 2% 0 2% 3%;
+}

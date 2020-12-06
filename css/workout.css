@@ -1,0 +1,12 @@
+.workoutTableData {
+  background-color: #F3F5F7;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 420px;
+  height: 80%;
+  padding-bottom: 0.2rem;
+}
+
+#workoutTable {
+  margin: 1%;
+}

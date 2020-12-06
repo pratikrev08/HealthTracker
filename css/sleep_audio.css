@@ -1,0 +1,53 @@
+.sleepData {
+  background-color: #FAFBFB;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 215px;
+  height: 62%;
+  padding-bottom: 0.2rem;
+}
+
+.audioData {
+  background-color: #FAFBFB;
+  border-radius: 4px;
+  text-align: center;
+  min-width: 215px;
+  height: 62%;
+  padding-bottom: 0.2rem;
+}
+
+#sleepDataTitle, #audioExposureTitle {
+  font-family: Roboto Mono, monospace;
+  font-weight: 400;
+  font-size: 0.6rem;
+  height: 30%;
+  padding: 5% 5% 0 5%;
+}
+
+#sleepInBed {
+  height: 50%;
+  font-size:1.5rem;
+  font-weight: 400;
+  color: #FFBB77;
+}
+#avgAudioExposure {
+  height: 50%;
+  font-size:1.5rem;
+  font-weight: 400;
+  color: #7777FF;
+}
+
+#inBedInfo, #audioExposureInfo {
+  width: 20px;
+  height: 100%;
+  vertical-align:top;
+  background-size: cover;
+  float: right;
+  opacity: 0.5;
+  margin: -2% 1% 0 -10%;
+  padding-bottom: 5%;
+}
+#inBedInfo:hover, #audioExposureInfo:hover {
+  opacity: 1;
+  cursor: pointer;
+}

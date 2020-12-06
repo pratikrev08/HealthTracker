@@ -1,0 +1,36 @@
+.heartMonitorGraph {
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  text-align: left;
+  min-width: 420px;
+  height: 70%;
+}
+
+#graphHeart {
+  margin-bottom: -50%;
+}
+#heartRateMetrics {
+  display:flex;
+  text-align: center;
+}
+#avgHeartRate {
+  width: 55%;
+}
+#heartRateRange {
+  width: 45%;
+}
+
+#heartRateInfo {
+  width: 18px;
+  height: 100%;
+  vertical-align:top;
+  background-size: cover;
+  float: right;
+  opacity: 0.5;
+  margin-right: 1%;
+  margin-left: -5%;
+}
+#heartRateInfo:hover {
+  opacity: 1;
+  cursor: pointer;
+}

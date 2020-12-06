@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Health Tracker</title>
+  <meta name="description" content="Health Tracker - Analyzing health data">
+  <meta name="author" content="Pratik Pramod Revankar">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/summary.css">
+  <link rel="stylesheet" href="css/heartMonitor.css">
+  <link rel="stylesheet" href="css/workout.css">
+  <link rel="stylesheet" href="css/sleep_audio.css">
+  <link rel="stylesheet" href="css/tipso.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic+Coding:700|Montserrat:300,500|Roboto:100,300,400|Roboto+Mono:400,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js" language="JavaScript"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+</head>
+<body>
+  <script src="js/dashboard.js" type="text/javascript"></script>
+  <script src="js/summary.js" type="text/javascript"></script>
+  <script src="js/heartMonitor.js" type="text/javascript"></script>
+  <script src="js/activityGauge.js" type="text/javascript"></script>
+  <script src="js/workout.js" type="text/javascript"></script>
+  <script src="js/sleep_audio.js" type="text/javascript"></script>
+  <script src="js/tipso.js"></script>
+
+  <!-- Title -->
+  <div class="header">
+    <h1>HEALTH TRACKER</h1>
+  </div>
+
+  <!-- Cards -->
+  <div class="dataCards">
+    <!-- coulmn 1 -->
+    <div class="column1">
+      <!-- Summary -->
+      <div class="card summary">
+        <div class="cardTitle">Activity Summary</div>
+        <div class="timeFilter">
+          <!-- date filter (calendar) -->
+          <div class="date">
+            <input id="selectedDateActivity">
+          </div>
+          <!-- month filter (dropdown) -->
+          <div class="month">
+            <select id="selectedMonthActivity">
+            </select>
+          </div>
+          <!-- year filter (dropdown) -->
+          <div class="year">
+            <select id="selectedYearActivity">
+            </select>
+          </div>
+        </div>
+        <div class="activitySummary">
+          <!-- Move, Exercise, Stand -->
+          <div class="moveSummary">
+            <div class="activityTitle">
+              MOVE
+              <p id="unit">( kcal )</p>
+            </div>
+            <div class="activityGauge">
+              <svg id="gaugeMove"></svg>
+            </div>
+            <div class="activityGraph">
+              <div id="graphTitle">Active Energy Burned</div>
+              <div id="graphMove"></div>
+            </div>
+          </div>
+          <div class="exerciseSummary">
+            <div class="activityTitle">
+              EXERCISE
+              <p id="unit">( min )</p>
+            </div>
+            <div class="activityGauge">
+              <svg id="gaugeExercise"></svg>
+            </div>
+            <div class="activityGraph">
+              <div id="graphTitle">Exercise Time</div>
+              <div id="graphExercise"></div>
+            </div>
+          </div>
+          <div class="standSummary">
+            <div class="activityTitle">
+              STAND
+              <p id="unit">( hour )</p>
+            </div>
+            <div class="activityGauge">
+              <svg id="gaugeStand"></svg>
+            </div>
+            <div class="activityGraph">
+              <div id="graphTitle">Stand Hours</div>
+              <div id="graphStand"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heart Monitor -->
+      <div class="card heartMonitor">
+        <div class="cardTitle">
+          <img src="js/heart.png" id="heartRateInfo"/>
+          Heart Monitor
+        </div>
+        <div class="timeFilter">
+          <!-- date filter (calendar) -->
+          <div class="date">
+            <input id="selectedDateHeart">
+          </div>
+          <!-- month filter (dropdown) -->
+          <div class="month">
+            <select id="selectedMonthHeart">
+            </select>
+          </div>
+          <!-- year filter (dropdown) -->
+          <div class="year">
+            <select id="selectedYearHeart">
+            </select>
+          </div>
+        </div>
+        <div class="heartMonitorGraph">
+          <canvas id="graphHeart"></canvas>
+        </div>
+        <div class="cardMetrics" id="heartRateMetrics">
+          <div id="avgHeartRate"></div>
+          <div id="heartRateRange"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- coulmn 2 -->
+    <div class="column2">
+      <!-- Daily Activity -->
+      <div class="card dailyActivity">
+        <div class="cardTitle">Daily Activity</div>
+        <div style="text-align:center; font-weight:100; font-size:3rem;color:#A2A4A3;opacity:0.4;margin-top:15%">TBD</div>
+      </div>
+
+      <!-- column 2 row 2 -->
+      <div class="bottomRight">
+        <!-- Workouts -->
+        <div class="card workouts">
+          <div class="cardTitle">Workouts</div>
+          <div class="timeFilter">
+            <!-- date filter (calendar) -->
+            <div class="date">
+              <input id="selectedDateWorkout">
+            </div>
+          </div>
+          <!-- workout table  -->
+          <div class="workoutTableData">
+            <table id="workoutTable"></table>
+          </div>
+        </div>
+        <div class="sleepAudio">
+          <!-- Sleep Analysis -->
+          <div class="card sleepAnalysis">
+            <div class="cardTitle">
+              <img src="js/sleeping-in-bed.png" id="inBedInfo"/>
+              Sleep Analysis
+            </div>
+            <div class="timeFilter">
+              <!-- date filter (calendar) -->
+              <div class="date">
+                <input id="selectedDateSleep">
+              </div>
+            </div>
+            <!-- sleep metric  -->
+            <div class="sleepData">
+              <p id="sleepDataTitle">In-bed Time</p>
+              <div id="sleepInBed"></div>
+            </div>
+          </div>
+          <!-- Audio Exposure -->
+          <div class="card audioExposure">
+            <div class="cardTitle">
+              <img src="js/audioExposure.png" id="audioExposureInfo"/>
+              Audio Exposure
+            </div>
+            <div class="timeFilter">
+              <!-- date filter (calendar) -->
+              <div class="date">
+                <input id="selectedDateAudio">
+              </div>
+            </div>
+            <!-- audio metric  -->
+            <div class="audioData">
+              <p id="audioExposureTitle">Average Audio Exposure</p>
+              <div id="avgAudioExposure"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    var activityDataset;
+    var recordDataset;
+    var workoutDataset;
+    var sleepAnalysisDataset = [];
+    var audioExposureDataset = [];
+    var parseDate = d3.timeParse('%Y-%m-%d');
+    var parseDateTimeZone = d3.timeParse('%Y-%m-%d %H:%M:%S%Z') //2019-08-01 00:00:44-07:00
+    var formatDate = d3.timeFormat('%m-%d-%Y');
+    var dataMinDate, dataMaxDate;
+    var workoutMinDate, workoutMaxDate;
+
+    // load activity data
+    d3.csv("data/activityData.csv", function(error, data) {
+      data.forEach(function(d) {
+        d['@activeEnergyBurned'] = +d['@activeEnergyBurned'];
+        d['@activeEnergyBurnedGoal'] = +d['@activeEnergyBurnedGoal']
+        d['@appleExerciseTime'] = +d['@appleExerciseTime']
+        d['@appleExerciseTimeGoal'] = +d['@appleExerciseTimeGoal']
+        d['@appleStandHours'] = +d['@appleStandHours']
+        d['@appleStandHoursGoal'] = +d['@appleStandHoursGoal']
+        d['@dateComponents'] = formatDate(parseDate(d['@dateComponents']));
+      });
+      maxDate = d3.max(data, function(d) { return d['@dateComponents']; });
+      minDate = d3.min(data, function(d) { return d['@dateComponents']; });
+      dataMinDate = minDate;
+      dataMaxDate = maxDate;
+      activityDataset = data;
+      updateFilters(data, minDate, maxDate, 'activity');
+      updateGauges(data, minDate, maxDate);
+      updateSummaryGraphs(data, minDate, minDate, maxDate);
+    });
+
+    // update info based on selected month
+    $('#selectedMonthActivity').on('change', function() {
+      updateGauges(activityDataset, this.value);
+      updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
+    });
+    // update info based on selected year
+    $('#selectedYearActivity').on('change', function() {
+      updateGauges(activityDataset, this.value);
+      updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
+    });
+
+    // load record data
+    d3.csv("data/recordData.csv", function(error, data) {
+      data.forEach(function(d) {
+        d['@creationDate'] = formatDate(parseDateTimeZone(d['@creationDate']));
+        // get Sleep Analysis and Audio Exposure data
+        if (d['@type'] == 'HKCategoryTypeIdentifierSleepAnalysis'){
+          // get minutes in-bed
+          d['@value'] = (Math.abs(parseDateTimeZone(d['@endDate']) - parseDateTimeZone(d['@startDate']))/6e4).toFixed(1);
+          sleepAnalysisDataset.push(d);
+        }
+        if (d['@type'] == 'HKQuantityTypeIdentifierHeadphoneAudioExposure'){
+          audioExposureDataset.push(d);
+        }
+        d['@value'] = +d['@value'];
+      });
+      recordDataset = data;
+      // maxDate = d3.max(data, function(d) { return d['@creationDate']; });
+      // minDate = d3.min(data, function(d) { return d['@creationDate']; });
+      updateFilters(data, dataMinDate, dataMaxDate, 'record');
+      sleepAnalysisDates = d3.set(sleepAnalysisDataset, function(d) { return d['@creationDate']; }).values();
+      updateSleepData(sleepAnalysisDataset, sleepAnalysisDates[sleepAnalysisDates.length - 1]);
+      updateFilters(sleepAnalysisDataset, dataMinDate, dataMaxDate, 'sleep', null, sleepAnalysisDates, null);
+
+      audioExposureDates = d3.set(audioExposureDataset, function(d) { return d['@creationDate']; }).values();
+      updateAudioData(audioExposureDataset, audioExposureDates[audioExposureDates.length - 1]);
+      updateFilters(data, dataMinDate, dataMaxDate, 'audio', null, null, audioExposureDates);
+
+      updateHeartGraph(audioExposureDataset, dataMinDate, dataMinDate, dataMaxDate);
+    });
+
+    // update info based on selected month
+    $('#selectedMonthHeart').on('change', function() {
+      updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
+    });
+    // update info based on selected year
+    $('#selectedYearHeart').on('change', function() {
+      updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
+    });
+    // tooltip for heart monitor card
+    $('#heartRateInfo').tipso({
+      useTitle: false,
+      size: 'tiny',
+      position: 'top-right',
+      offsetX: 10,
+      offsetY: 150,
+      delay: 0,
+      background: '#FFFFFF',
+      color: '#565A5C',
+      showArrow: false,
+      width: '300',
+      maxWidth: '300',
+      animationIn: 'pulse',
+      tooltipHover: true,
+      content: '<div><div style="margin:1% 2%">Your heart beats approximately 100,000 times per day, accelerating and slowing through periods of rest and exertion.</br>Your heart rate refers to how many times your heart beats per minute (bpm) and can be an indicator of your cardiovascular health.</br>The following table shows the appropriate target heart rate zone for a range of ages.</div><div id="heartRateInfoTable" style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><th>Age (yrs)</th><th>Target Heart Rate at 50-85% exertion (bpm)</th><th>Average Maximum Heart Rate at 100% exertion (bpm)</th></tr><tr><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">20</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">100 to 170</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">200</td></tr><tr><td>30</td><td>95 to 162</td><td>190</td></tr><tr><td>35</td><td>93 to 157</td><td>185</td></tr><tr><td>40</td><td>90 to 153</td><td>180</td></tr><tr><td>45</td><td>88 to 149</td><td>175</td></tr><tr><td>50</td><td>85 to 145</td><td>170</td></tr><tr><td>55</td><td>83 to 140</td><td>165</td></tr><tr><td>60</td><td>80 to 136</td><td>160</td></tr><tr><td>65</td><td>78 to 132</td><td>155</td></tr><tr><td>70</td><td>75 to 128</td><td>150</td></tr></table></div><div style="font-size:6px;font-style:italic;color:#565A5C;margin:1% 10%;cursor:pointer">source: <a href="https://www.medicalnewstoday.com/articles/235710.php" target="_blank">https://www.medicalnewstoday.com/articles/235710.php</a></div></div>'
+    });
+
+    // tooltip for sleep analysis card
+    $('#inBedInfo').tipso({
+      useTitle: false,
+      size: 'tiny',
+      position: 'top-left',
+      offsetX: 20,
+      offsetY: 0,
+      delay: 10,
+      background: '#FFFFFF',
+      color: '#565A5C',
+      showArrow: false,
+      width: '200',
+      maxWidth: '200',
+      animationIn: 'pulse',
+      tooltipHover: true,
+      content: '<div style="margin:1% 2%">The "In-bed" period reflects the time period you are lying in bed with the intention to sleep. For most people it starts when you turn the lights off and it ends when you get out of bed.</div>'
+    });
+
+    // tooltip for audio exposure card
+    $('#audioExposureInfo').tipso({
+      useTitle: false,
+      size: 'tiny',
+      position: 'top-left',
+      offsetX: 20,
+      offsetY: 0,
+      delay: 10,
+      background: '#FFFFFF',
+      color: '#565A5C',
+      showArrow: false,
+      width: '200',
+      maxWidth: '200',
+      animationIn: 'pulse',
+      tooltipHover: true,
+      content: '<div><div style="margin:1% 2%">This represents the volume of your headphone audio measured in A-weighted decibels (dbA). It can be helpful to understand how long you are exposed to loud audio.</br>Long-term exposure to sounds below 80 db should not affect your hearing.</br>The following table lists the exposure limits: </div><div style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><td style="width:40%">80 db</td><td style="width:60%">40 hours/7 days</td></tr><tr><td>90 db</td><td>4 hours/7 days</td></tr><tr><td>100 db</td><td>24 minutes/7 days</td></tr><tr><td>110 db</td><td>2 minutes/7 days</td></tr><tr><td>120 db</td><td>14 seconds/7 days</td></tr></table></div></div>'
+    });
+
+    // load workout data
+    d3.csv("data/workoutData.csv", function(error, data) {
+      data.forEach(function(d) {
+        d['@creationDate'] = formatDate(parseDateTimeZone(d['@creationDate']));
+        d['@duration'] = +d['@duration'];
+        d['@totalDistance'] = +d['@totalDistance'];
+        d['@totalEnergyBurned'] = +d['@totalEnergyBurned'];
+      });
+      maxDate = d3.max(data, function(d) { return d['@creationDate']; });
+      minDate = d3.min(data, function(d) { return d['@creationDate']; });
+      workoutDates = d3.set(data, function(d) { return d['@creationDate']; }).values();
+      workoutMinDate = minDate;
+      workoutMaxDate = maxDate;
+      workoutDataset = data;
+      updateFilters(data, minDate, maxDate, 'workout', workoutDates);
+      updateWorkoutData(data, workoutMaxDate);
+    });
+
+  </script>
+</body>
+</html>

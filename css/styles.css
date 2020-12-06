@@ -1,0 +1,160 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 100;
+  background-color: #F3F5F7;
+}
+p {
+  margin: 0;
+}
+
+/* Layout main components */
+.header {
+  font-family: 'Nanum Gothic Coding', monospace;
+  text-align: center;
+}
+.dataCards {
+  display: flex;
+  padding: 0.25vw;
+}
+
+/* Column settings */
+.column1 {
+  flex: 1;
+  min-width: 35%;
+  min-height: 80vh;
+  display: block;
+}
+.column2 {
+  flex: 2;
+  min-width: 65%;
+  min-height: 80vh;
+  display: block;
+}
+
+/* Card */
+.card {
+  background: #FFFFFF;
+  overflow: scroll;
+  text-overflow: ellipsis;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  -o-text-overflow: ellipsis;
+}
+.card:hover {
+  -webkit-box-shadow: 0 0 5px 0 #565A5C ;
+  box-shadow: 0 0 5px 0 #565A5C ;
+}
+/* Summary */
+.summary {
+  padding: 1rem;
+  margin: 0 1% 2.5% 2%;
+  height: 55%;
+}
+/* Heart Monitor */
+.heartMonitor {
+  padding: 1rem;
+  margin: 1% 1% 2% 2%;
+  height: 41%;
+}
+/* Daily Activity */
+.dailyActivity {
+  padding: 1rem;
+  margin: 0 1% 1% 1%;
+  min-height: 50%;
+}
+
+/* Bottom right cards */
+.bottomRight {
+  display: flex;
+  margin-right: 1%;
+  height: 50%;
+}
+/* Workouts */
+.workouts {
+  flex: 2.5;
+  display: block;
+  padding: 1rem;
+  margin: 1% 1% 0 1%;
+  min-height: 90.5%;
+}
+.sleepAudio {
+  flex: 1;
+  display: block;
+  margin: 1% 0 2% 0;
+  height: 94%;
+}
+/* Sleep Anaylsis */
+.sleepAnalysis {
+  padding: 1rem;
+  margin: 0;
+  height: 41%;
+}
+/* Audio Exposure */
+.audioExposure {
+  padding: 1rem;
+  margin: 5% 0% 0 0;
+  height: 41%;
+}
+
+/* card components */
+.cardTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  text-align: center;
+}
+.cardMetrics {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 0.9rem;
+  text-align: center;
+}
+.timeFilter {
+  border-top: 1px solid rgba(162, 164, 163, 0.2); /* #A2A4A3 */
+  margin: 1% 0 1% 0;
+  padding-top: 0.5%;
+  display: flex;
+}
+.date,.month,.year {
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+
+#selectedDateActivity, #selectedDateHeart {
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+  text-align: center;
+  width: 80%;
+}
+#selectedDateWorkout {
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+  text-align: center;
+  width: 25%;
+}
+#selectedDateSleep, #selectedDateAudio {
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+  text-align: center;
+  width: 75%;
+}
+#selectedMonthActivity, #selectedYearActivity, #selectedMonthHeart, #selectedYearHeart {
+  margin-top: 2.5%;
+  font-size: 1rem;
+  text-align: center;
+  width: 90%;
+}
+#graphTitle {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+  font-size: 0.6rem;
+  text-align: center;
+  margin-top: 2%;
+  margin-bottom: -2%
+}
