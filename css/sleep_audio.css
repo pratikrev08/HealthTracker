@@ -3,7 +3,7 @@
   border-radius: 4px;
   text-align: center;
   min-width: 215px;
-  height: 62%;
+  height: 50%;
   padding-bottom: 0.2rem;
 }
 
@@ -12,7 +12,7 @@
   border-radius: 4px;
   text-align: center;
   min-width: 215px;
-  height: 62%;
+  height: 50%;
   padding-bottom: 0.2rem;
 }
 
@@ -21,7 +21,7 @@
   font-weight: 400;
   font-size: 0.6rem;
   height: 30%;
-  padding: 5% 5% 0 5%;
+  padding: 0 5% 0 5%;
 }
 
 #sleepInBed {

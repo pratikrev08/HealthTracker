@@ -1,0 +1,57 @@
+.userForm{
+    background-color: #F3F5F7;
+    border-radius: 4px;
+    text-align: center;
+    height: 100%;
+}
+
+.newUser{
+    height: 48%;
+    padding: 1rem 1rem 0 1rem;
+    display: block;
+}
+
+.returningUser{
+    height: 45%;
+    padding: 1rem 1rem 0 1rem;
+    display: block;
+}
+
+#newUsername, #newPassword, #newConfirmPassword, #oldUsername, #oldPassword{
+    font-size: 0.8rem;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 400;
+    text-align: center;
+    width: 80%;
+}
+
+/* Spinner */
+
+#spinnerNewUser, #spinnerOldUserNewData, #spinnerOldUserOldData {
+    visibility: hidden;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }

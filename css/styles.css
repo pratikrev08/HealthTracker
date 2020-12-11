@@ -50,20 +50,26 @@ p {
 /* Summary */
 .summary {
   padding: 1rem;
-  margin: 0 1% 2.5% 2%;
-  height: 55%;
+  height: 95%;
 }
 /* Heart Monitor */
 .heartMonitor {
   padding: 1rem;
-  margin: 1% 1% 2% 2%;
-  height: 41%;
+  margin: 0 0 0 1%;
+  height: 95%;
 }
 /* Daily Activity */
 .dailyActivity {
-  padding: 1rem;
+  display: flex;
   margin: 0 1% 1% 1%;
-  min-height: 50%;
+  height: 50%;
+}
+
+/* Form */
+.formCard {
+  padding: 1rem;
+  height: 77%;
+  overflow: hidden;
 }
 
 /* Bottom right cards */
@@ -78,7 +84,7 @@ p {
   display: block;
   padding: 1rem;
   margin: 1% 1% 0 1%;
-  min-height: 90.5%;
+  height: 50%;
 }
 .sleepAudio {
   flex: 1;
@@ -90,13 +96,15 @@ p {
 .sleepAnalysis {
   padding: 1rem;
   margin: 0;
-  height: 41%;
+  height: 21.5%;
+  overflow: hidden;
 }
 /* Audio Exposure */
 .audioExposure {
   padding: 1rem;
   margin: 5% 0% 0 0;
-  height: 41%;
+  height: 21.5%;
+  overflow: hidden;
 }
 
 /* card components */

@@ -6,6 +6,7 @@
   <meta name="description" content="Health Tracker - Analyzing health data">
   <meta name="author" content="Pratik Pramod Revankar">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/form.css">
   <link rel="stylesheet" href="css/summary.css">
   <link rel="stylesheet" href="css/heartMonitor.css">
   <link rel="stylesheet" href="css/workout.css">
@@ -20,8 +21,10 @@
   <script src="https://d3js.org/d3.v4.min.js" language="JavaScript"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
+  <script src="js/backend.js" type="text/javascript"></script>
   <script src="js/dashboard.js" type="text/javascript"></script>
   <script src="js/summary.js" type="text/javascript"></script>
   <script src="js/heartMonitor.js" type="text/javascript"></script>
@@ -39,7 +42,58 @@
   <div class="dataCards">
     <!-- coulmn 1 -->
     <div class="column1">
-      <!-- Summary -->
+      <!-- Form -->
+      <div class="card formCard">
+        <div class="userForm">
+          <!-- New User -->
+          <div class="newUser">
+            <div class="cardTitle">New User</div>
+            <form action="#" id="newUserForm">
+              <br>
+              <div><input id="newUsername" name="newUsername" type="text" class="form-control" placeholder="Enter email/username" required></div><br>
+              <div>
+                <input id="newPassword" name="newPassword" type="password" class="form-control" placeholder="Enter password" required>
+              </div>
+              <div style="font-size: small;">
+                <input id="newConfirmPassword" name="newConfirmPassword" type="password" class="form-control" placeholder="Confirm password" required><br>
+                <input id="showNewPassword" type="checkbox" onclick="showPasswordNew()"> Show Password 
+              </div>
+              <div><span id="messageNew" style="font-size: xx-small; color: #FF7777;font-weight: 300;"></span></div><br>
+              <div><label for="newUserFile">Upload Data</label><input type="file" id="newUserFile" name="newUserFile" accept=".xml"></file></div><br>
+              <input id="newUserLoadButton" type="button" value="Load Data" onclick="newUserFormOnSubmit()"><br>
+              <div style="display: inline-block;margin-top: 1%;"><div class="loading" id="spinnerNewUser"><div class="lds-dual-ring"></div></div></div> 
+            </form>
+          </div>
+
+          <!-- Returning User -->
+          <div class="returningUser">
+            <div class="cardTitle">Returning User</div>
+            <form action="#" id="oldUserForm">
+              <br>
+              <div><input id="oldUsername" name="oldUsername" type="text" class="form-control" placeholder="Enter email/username" required></div>
+              <div>
+                <input id="oldPassword" name="oldPassword" type="password" class="form-control" placeholder="Enter password" required>
+              </div>
+              <div style="font-size: small;">
+                <input id="showOldPassword" type="checkbox" onclick="showPasswordOld()"> Show Password 
+              </div>
+              <div><span id="messageOld" style="font-size: xx-small; color: #FF7777;font-weight: 300;"></span></div><br>
+              <div><input id="loadOldData" type="button" value="Load Previous Data" onclick="oldUserLoadPreviousData()"></div>
+              <div style="display: inline-block;margin-bottom: 2%;"><div class="loading" id="spinnerOldUserOldData"><div class="lds-dual-ring"></div></div></div>
+              <div><label for="oldUserFile">Upload Data</label><input type="file" id="oldUserFile" name="oldUserFile" accept=".xml"></file></div><br>
+              <div><span id="messageNewData" style="font-size: xx-small; color: #FF7777;font-weight: 300;"></span></div>
+             <div><input id="loadNewData" type="button" value="Load New Data" onclick="oldUserLoadNewData()"></div>
+              <div style="display: inline-block;"><div class="loading" id="spinnerOldUserNewData"><div class="lds-dual-ring"></div></div></div> 
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- coulmn 2 -->
+    <div class="column2">
+      <div class="dailyActivity">
+       <!-- Summary -->
       <div class="card summary">
         <div class="cardTitle">Activity Summary</div>
         <div class="timeFilter">
@@ -63,7 +117,7 @@
           <div class="moveSummary">
             <div class="activityTitle">
               MOVE
-              <p id="unit">( kcal )</p>
+              <p id="unit">( cal )</p>
             </div>
             <div class="activityGauge">
               <svg id="gaugeMove"></svg>
@@ -132,14 +186,6 @@
           <div id="heartRateRange"></div>
         </div>
       </div>
-    </div>
-
-    <!-- coulmn 2 -->
-    <div class="column2">
-      <!-- Daily Activity -->
-      <div class="card dailyActivity">
-        <div class="cardTitle">Daily Activity</div>
-        <div style="text-align:center; font-weight:100; font-size:3rem;color:#A2A4A3;opacity:0.4;margin-top:15%">TBD</div>
       </div>
 
       <!-- column 2 row 2 -->
@@ -208,137 +254,332 @@
     var sleepAnalysisDataset = [];
     var audioExposureDataset = [];
     var parseDate = d3.timeParse('%Y-%m-%d');
-    var parseDateTimeZone = d3.timeParse('%Y-%m-%d %H:%M:%S%Z') //2019-08-01 00:00:44-07:00
+    var parseDateTimeZone = d3.timeParse('%Y-%m-%d %H:%M:%S%Z') //2020-08-01 00:00:44-07:00
     var formatDate = d3.timeFormat('%m-%d-%Y');
     var dataMinDate, dataMaxDate;
     var workoutMinDate, workoutMaxDate;
 
-    // load activity data
-    d3.csv("data/activityData.csv", function(error, data) {
-      data.forEach(function(d) {
-        d['@activeEnergyBurned'] = +d['@activeEnergyBurned'];
-        d['@activeEnergyBurnedGoal'] = +d['@activeEnergyBurnedGoal']
-        d['@appleExerciseTime'] = +d['@appleExerciseTime']
-        d['@appleExerciseTimeGoal'] = +d['@appleExerciseTimeGoal']
-        d['@appleStandHours'] = +d['@appleStandHours']
-        d['@appleStandHoursGoal'] = +d['@appleStandHoursGoal']
-        d['@dateComponents'] = formatDate(parseDate(d['@dateComponents']));
+    // load data after user submits form
+    function showPasswordNew() {
+      var p1 = document.getElementById("newPassword");
+      var p2 = document.getElementById("newConfirmPassword");
+      if (p1.type === "password") {
+        p1.type = "text";
+      } else {
+        p1.type = "password";
+      }
+      if (p2.type === "password") {
+        p2.type = "text";
+      } else {
+        p2.type = "password";
+      }
+    }
+    function showPasswordOld() {
+      var p = document.getElementById("oldPassword");
+      if (p.type === "password") {
+        p.type = "text";
+      } else {
+        p.type = "password";
+      }
+    }
+
+    $('#newConfirmPassword').on('keyup', function () {
+      $('#messageNew').text(' ')
+      if ($('#newPassword').val() == $('#newConfirmPassword').val()) {
+        $('#newConfirmPassword').css({"border-color": "#99CE58", "box-shadow": "0 0 10px #99CE58"});
+      } else {
+        $('#newConfirmPassword').css({"border-color": "#FF7777", "box-shadow": "0 0 10px #FF7777"});
+      }
+      setTimeout(function(){ 
+        $('#newConfirmPassword').css({"border-color": "", "box-shadow": ""});; 
+      }, 1500);
+    });
+
+    $("#newUserFile").on('change', function() {
+      $('#messageNew').text(' ')
+    });
+
+    $('#newUsername').on('keyup', function () {
+      $('#messageNew').text(' ')
+    });
+
+    $('#newPassword').on('keyup', function () {
+      $('#messageNew').text(' ')
+    });
+
+    function newUserFormOnSubmit() {
+      newUserForm = document.getElementById('newUserForm')
+      // form validation
+      username = newUserForm.elements['newUsername'].value
+      password = newUserForm.elements['newPassword'].value
+      confirmPassword = newUserForm.elements['newConfirmPassword'].value
+      dataFile = newUserForm.elements['newUserFile']
+
+      if(username.length == 0){
+        $('#messageNew').text('Please enter a username')
+      }
+      else if(password.length == 0){
+        $('#messageNew').text('Please enter a password')
+      }
+      else if(password != confirmPassword){
+        $('#messageNew').text('Passwords do not match, please check your password')
+      } 
+      else if(dataFile.files.length == 0){
+        $('#messageNew').html('File not uploaded')
+      }
+      else if(dataFile.files[0]['size'] == 0){
+        $('#messageNew').html('File uploaded is empty, please uplaod another file')
+      }
+      else {
+        // disable form
+        spinner = document.getElementById('spinnerNewUser')
+        spinner.style.visibility = "visible";
+        // document.getElementById('newUserLoadButton').disabled = 'true'
+        // document.getElementById('showNewPassword').disabled = 'true'
+        // document.getElementById('newUsername').disabled = 'true'
+        // document.getElementById('newPassword').disabled = 'true'
+        // document.getElementById('newConfirmPassword').sdisabled = 'true'
+        // document.getElementById('newUserFile').disabled = 'true'
+
+        // create new user, upload new data and load        
+        (async function() {
+          userExists = false
+
+          // check if user with username already exists
+          users = await getUsers()
+          users = JSON.parse(users) 
+          for(i=0; i<users.length; i++){
+              if(users[i] == username){
+                  userExists = true
+              }
+          }
+          if(userExists){
+            $('#messageNew').html('User already exists, choose a different username')
+            spinner.style.visibility = "hidden";
+          } 
+          else{
+            response = await putUser(username, password)
+            response = JSON.parse(response)
+            existingUserId = response["userid"]
+            
+            // upload data to Postgres
+            dataFileStored = await putData(existingUserId, dataFile.files[0])
+
+            setTimeout(() => {
+              spinner.style.visibility = "hidden";
+              loadData()
+            }, 45000); 
+          }
+        })()
+      }
+      
+    }
+
+    $('#oldUsername').on('keyup', function () {
+      $('#messageOld').text(' ')
+      // $('#loadNewData').attr('disabled', 'false')
+      // $('#loadOldData').attr('disabled', 'false')
+    });
+
+    $('#oldPassword').on('keyup', function () {
+      $('#messageOld').text(' ')
+      // $('#loadNewData').attr('disabled', 'false')
+      // $('#loadOldData').attr('disabled', 'false')
+    });
+
+    function oldUserLoadPreviousData() {
+      oldUserForm = document.getElementById('oldUserForm')
+      // form validation
+      username = oldUserForm.elements['oldUsername'].value
+      password = oldUserForm.elements['oldPassword'].value
+
+      if(username.length == 0){
+        $('#messageOld').text('Please enter a username')
+      }
+      else if(password.length == 0){
+        $('#messageOld').text('Please enter a password')
+      }
+      else {
+        // disable form
+        spinner = document.getElementById('spinnerOldUserOldData')
+        spinner.style.visibility = "visible";
+        
+        (async function() {
+          response = await getData(username, password)
+          response = JSON.parse(response)
+
+          if(response["dataFetched"]){
+            spinner.style.visibility = "hidden";
+            loadData()
+          }
+          else{
+            spinner.style.visibility = "hidden";
+            $('#messageOld').text('User does not exist, please create new user')
+          }
+        })()
+      }
+    }
+
+    $("#oldUserFile").on('change', function() {
+      $('#messageNewData').text(' ')
+    });
+
+    function oldUserLoadNewData() {
+      newUserForm = document.getElementById('oldUserForm')
+      // form validation
+      username = newUserForm.elements['oldUsername'].value
+      password = newUserForm.elements['oldPassword'].value
+      dataFile = newUserForm.elements['oldUserFile']
+
+      if(username.length == 0){
+        $('#messageOld').text('Please enter a username')
+      }
+      else if(password.length == 0){
+        $('#messageOld').text('Please enter a password')
+      }
+      else if(dataFile.files.length == 0){
+        $('#messageNewData').html('File not uploaded')
+      }
+      else if(dataFile.files[0]['size'] == 0){
+        $('#messageNewData').html('File uploaded is empty, please uplaod another file')
+      }
+      else {
+        // disable form
+        $('#spinnerOldUserNewData').css('visibility', 'visible')
+
+        // TODO - upload new data and load
+      }
+      
+    }
+
+
+    function loadData() {
+      // load activity data
+      d3.csv("data/activityData.csv", function(error, data) {
+        data.forEach(function(d) {
+          d['@activeEnergyBurned'] = +d['@activeEnergyBurned'];
+          d['@activeEnergyBurnedGoal'] = +d['@activeEnergyBurnedGoal']
+          d['@appleExerciseTime'] = +d['@appleExerciseTime']
+          d['@appleExerciseTimeGoal'] = +d['@appleExerciseTimeGoal']
+          d['@appleStandHours'] = +d['@appleStandHours']
+          d['@appleStandHoursGoal'] = +d['@appleStandHoursGoal']
+          d['@dateComponents'] = formatDate(parseDate(d['@dateComponents']));
+        });
+        maxDate = d3.max(data, function(d) { return d['@dateComponents']; });
+        minDate = d3.min(data, function(d) { return d['@dateComponents']; });
+        dataMinDate = minDate;
+        dataMaxDate = maxDate;
+        activityDataset = data;
+        updateFilters(data, minDate, maxDate, 'activity');
+        updateGauges(data, minDate, maxDate);
+        updateSummaryGraphs(data, minDate, minDate, maxDate);
       });
-      maxDate = d3.max(data, function(d) { return d['@dateComponents']; });
-      minDate = d3.min(data, function(d) { return d['@dateComponents']; });
-      dataMinDate = minDate;
-      dataMaxDate = maxDate;
-      activityDataset = data;
-      updateFilters(data, minDate, maxDate, 'activity');
-      updateGauges(data, minDate, maxDate);
-      updateSummaryGraphs(data, minDate, minDate, maxDate);
-    });
 
-    // update info based on selected month
-    $('#selectedMonthActivity').on('change', function() {
-      updateGauges(activityDataset, this.value);
-      updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
-    });
-    // update info based on selected year
-    $('#selectedYearActivity').on('change', function() {
-      updateGauges(activityDataset, this.value);
-      updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
-    });
-
-    // load record data
-    d3.csv("data/recordData.csv", function(error, data) {
-      data.forEach(function(d) {
-        d['@creationDate'] = formatDate(parseDateTimeZone(d['@creationDate']));
-        // get Sleep Analysis and Audio Exposure data
-        if (d['@type'] == 'HKCategoryTypeIdentifierSleepAnalysis'){
-          // get minutes in-bed
-          d['@value'] = (Math.abs(parseDateTimeZone(d['@endDate']) - parseDateTimeZone(d['@startDate']))/6e4).toFixed(1);
-          sleepAnalysisDataset.push(d);
-        }
-        if (d['@type'] == 'HKQuantityTypeIdentifierHeadphoneAudioExposure'){
-          audioExposureDataset.push(d);
-        }
-        d['@value'] = +d['@value'];
+      // update info based on selected month
+      $('#selectedMonthActivity').on('change', function() {
+        updateGauges(activityDataset, this.value);
+        updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
       });
-      recordDataset = data;
-      // maxDate = d3.max(data, function(d) { return d['@creationDate']; });
-      // minDate = d3.min(data, function(d) { return d['@creationDate']; });
-      updateFilters(data, dataMinDate, dataMaxDate, 'record');
-      sleepAnalysisDates = d3.set(sleepAnalysisDataset, function(d) { return d['@creationDate']; }).values();
-      updateSleepData(sleepAnalysisDataset, sleepAnalysisDates[sleepAnalysisDates.length - 1]);
-      updateFilters(sleepAnalysisDataset, dataMinDate, dataMaxDate, 'sleep', null, sleepAnalysisDates, null);
+      // update info based on selected year
+      $('#selectedYearActivity').on('change', function() {
+        updateGauges(activityDataset, this.value);
+        updateSummaryGraphs(activityDataset, this.value, dataMinDate, dataMaxDate);
+      });
 
-      audioExposureDates = d3.set(audioExposureDataset, function(d) { return d['@creationDate']; }).values();
-      updateAudioData(audioExposureDataset, audioExposureDates[audioExposureDates.length - 1]);
-      updateFilters(data, dataMinDate, dataMaxDate, 'audio', null, null, audioExposureDates);
+      // load record data
+      d3.csv("data/recordData.csv", function(error, data) {
+        data.forEach(function(d) {
+          d['@creationDate'] = formatDate(parseDateTimeZone(d['@creationDate']));
+          // get Sleep Analysis and Audio Exposure data
+          if (d['@type'] == 'HKCategoryTypeIdentifierSleepAnalysis'){
+            // get minutes in-bed
+            d['@value'] = (Math.abs(parseDateTimeZone(d['@endDate']) - parseDateTimeZone(d['@startDate']))/6e4).toFixed(1);
+            sleepAnalysisDataset.push(d);
+          }
+          if (d['@type'] == 'HKQuantityTypeIdentifierHeadphoneAudioExposure'){
+            audioExposureDataset.push(d);
+          }
+          d['@value'] = +d['@value'];
+        });
+        recordDataset = data;
+        // maxDate = d3.max(data, function(d) { return d['@creationDate']; });
+        // minDate = d3.min(data, function(d) { return d['@creationDate']; });
+        updateFilters(data, dataMinDate, dataMaxDate, 'record');
+        sleepAnalysisDates = d3.set(sleepAnalysisDataset, function(d) { return d['@creationDate']; }).values();
+        updateSleepData(sleepAnalysisDataset, sleepAnalysisDates[sleepAnalysisDates.length - 1]);
+        updateFilters(sleepAnalysisDataset, dataMinDate, dataMaxDate, 'sleep', null, sleepAnalysisDates, null);
 
-      updateHeartGraph(audioExposureDataset, dataMinDate, dataMinDate, dataMaxDate);
-    });
+        audioExposureDates = d3.set(audioExposureDataset, function(d) { return d['@creationDate']; }).values();
+        updateAudioData(audioExposureDataset, audioExposureDates[audioExposureDates.length - 1]);
+        updateFilters(data, dataMinDate, dataMaxDate, 'audio', null, null, audioExposureDates);
 
-    // update info based on selected month
-    $('#selectedMonthHeart').on('change', function() {
-      updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
-    });
-    // update info based on selected year
-    $('#selectedYearHeart').on('change', function() {
-      updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
-    });
-    // tooltip for heart monitor card
-    $('#heartRateInfo').tipso({
-      useTitle: false,
-      size: 'tiny',
-      position: 'top-right',
-      offsetX: 10,
-      offsetY: 150,
-      delay: 0,
-      background: '#FFFFFF',
-      color: '#565A5C',
-      showArrow: false,
-      width: '300',
-      maxWidth: '300',
-      animationIn: 'pulse',
-      tooltipHover: true,
-      content: '<div><div style="margin:1% 2%">Your heart beats approximately 100,000 times per day, accelerating and slowing through periods of rest and exertion.</br>Your heart rate refers to how many times your heart beats per minute (bpm) and can be an indicator of your cardiovascular health.</br>The following table shows the appropriate target heart rate zone for a range of ages.</div><div id="heartRateInfoTable" style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><th>Age (yrs)</th><th>Target Heart Rate at 50-85% exertion (bpm)</th><th>Average Maximum Heart Rate at 100% exertion (bpm)</th></tr><tr><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">20</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">100 to 170</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">200</td></tr><tr><td>30</td><td>95 to 162</td><td>190</td></tr><tr><td>35</td><td>93 to 157</td><td>185</td></tr><tr><td>40</td><td>90 to 153</td><td>180</td></tr><tr><td>45</td><td>88 to 149</td><td>175</td></tr><tr><td>50</td><td>85 to 145</td><td>170</td></tr><tr><td>55</td><td>83 to 140</td><td>165</td></tr><tr><td>60</td><td>80 to 136</td><td>160</td></tr><tr><td>65</td><td>78 to 132</td><td>155</td></tr><tr><td>70</td><td>75 to 128</td><td>150</td></tr></table></div><div style="font-size:6px;font-style:italic;color:#565A5C;margin:1% 10%;cursor:pointer">source: <a href="https://www.medicalnewstoday.com/articles/235710.php" target="_blank">https://www.medicalnewstoday.com/articles/235710.php</a></div></div>'
-    });
+        updateHeartGraph(audioExposureDataset, dataMinDate, dataMinDate, dataMaxDate);
+      });
 
-    // tooltip for sleep analysis card
-    $('#inBedInfo').tipso({
-      useTitle: false,
-      size: 'tiny',
-      position: 'top-left',
-      offsetX: 20,
-      offsetY: 0,
-      delay: 10,
-      background: '#FFFFFF',
-      color: '#565A5C',
-      showArrow: false,
-      width: '200',
-      maxWidth: '200',
-      animationIn: 'pulse',
-      tooltipHover: true,
-      content: '<div style="margin:1% 2%">The "In-bed" period reflects the time period you are lying in bed with the intention to sleep. For most people it starts when you turn the lights off and it ends when you get out of bed.</div>'
-    });
+      // update info based on selected month
+      $('#selectedMonthHeart').on('change', function() {
+        updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
+      });
+      // update info based on selected year
+      $('#selectedYearHeart').on('change', function() {
+        updateHeartGraph(recordDataset, this.value, dataMinDate, dataMaxDate);
+      });
+      // tooltip for heart monitor card
+      $('#heartRateInfo').tipso({
+        useTitle: false,
+        size: 'tiny',
+        position: 'top-left',
+        offsetX: 0,
+        offsetY: -100,
+        delay: 10,
+        background: '#FFFFFF',
+        color: '#565A5C',
+        showArrow: false,
+        width: '300',
+        maxWidth: '300',
+        animationIn: 'pulse',
+        tooltipHover: true,
+        content: '<div><div style="margin:1% 2%">Your heart beats approximately 100,000 times per day, accelerating and slowing through periods of rest and exertion.</br>Your heart rate refers to how many times your heart beats per minute (bpm) and can be an indicator of your cardiovascular health.</br>The following table shows the appropriate target heart rate zone for a range of ages.</div><div id="heartRateInfoTable" style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><th>Age (yrs)</th><th>Target Heart Rate at 50-85% exertion (bpm)</th><th>Average Maximum Heart Rate at 100% exertion (bpm)</th></tr><tr><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">20</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">100 to 170</td><td style="border-top: 1px solid rgba(162, 164, 163, 0.2)">200</td></tr><tr><td>30</td><td>95 to 162</td><td>190</td></tr><tr><td>35</td><td>93 to 157</td><td>185</td></tr><tr><td>40</td><td>90 to 153</td><td>180</td></tr><tr><td>45</td><td>88 to 149</td><td>175</td></tr><tr><td>50</td><td>85 to 145</td><td>170</td></tr><tr><td>55</td><td>83 to 140</td><td>165</td></tr><tr><td>60</td><td>80 to 136</td><td>160</td></tr><tr><td>65</td><td>78 to 132</td><td>155</td></tr><tr><td>70</td><td>75 to 128</td><td>150</td></tr></table></div><div style="font-size:6px;font-style:italic;color:#565A5C;margin:1% 10%;cursor:pointer">source: <a href="https://www.medicalnewstoday.com/articles/235710.php" target="_blank">https://www.medicalnewstoday.com/articles/235710.php</a></div></div>'
+      });
 
-    // tooltip for audio exposure card
-    $('#audioExposureInfo').tipso({
-      useTitle: false,
-      size: 'tiny',
-      position: 'top-left',
-      offsetX: 20,
-      offsetY: 0,
-      delay: 10,
-      background: '#FFFFFF',
-      color: '#565A5C',
-      showArrow: false,
-      width: '200',
-      maxWidth: '200',
-      animationIn: 'pulse',
-      tooltipHover: true,
-      content: '<div><div style="margin:1% 2%">This represents the volume of your headphone audio measured in A-weighted decibels (dbA). It can be helpful to understand how long you are exposed to loud audio.</br>Long-term exposure to sounds below 80 db should not affect your hearing.</br>The following table lists the exposure limits: </div><div style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><td style="width:40%">80 db</td><td style="width:60%">40 hours/7 days</td></tr><tr><td>90 db</td><td>4 hours/7 days</td></tr><tr><td>100 db</td><td>24 minutes/7 days</td></tr><tr><td>110 db</td><td>2 minutes/7 days</td></tr><tr><td>120 db</td><td>14 seconds/7 days</td></tr></table></div></div>'
-    });
+      // tooltip for sleep analysis card
+      $('#inBedInfo').tipso({
+        useTitle: false,
+        size: 'tiny',
+        position: 'top-left',
+        offsetX: 20,
+        offsetY: 0,
+        delay: 10,
+        background: '#FFFFFF',
+        color: '#565A5C',
+        showArrow: false,
+        width: '200',
+        maxWidth: '200',
+        animationIn: 'pulse',
+        tooltipHover: true,
+        content: '<div style="margin:1% 2%">The "In-bed" period reflects the time period you are lying in bed with the intention to sleep. For most people it starts when you turn the lights off and it ends when you get out of bed.</div>'
+      });
 
-    // load workout data
-    d3.csv("data/workoutData.csv", function(error, data) {
+      // tooltip for audio exposure card
+      $('#audioExposureInfo').tipso({
+        useTitle: false,
+        size: 'tiny',
+        position: 'top-left',
+        offsetX: 20,
+        offsetY: 0,
+        delay: 10,
+        background: '#FFFFFF',
+        color: '#565A5C',
+        showArrow: false,
+        width: '200',
+        maxWidth: '200',
+        animationIn: 'pulse',
+        tooltipHover: true,
+        content: '<div><div style="margin:1% 2%">This represents the volume of your headphone audio measured in A-weighted decibels (dbA). It can be helpful to understand how long you are exposed to loud audio.</br>Long-term exposure to sounds below 80 db should not affect your hearing.</br>The following table lists the exposure limits: </div><div style="font-size:0.01rem;margin:0 2%;text-align:center;border: 1px solid rgba(162, 164, 163, 0.2);border-radius: 4px"><table><tr><td style="width:40%">80 db</td><td style="width:60%">40 hours/7 days</td></tr><tr><td>90 db</td><td>4 hours/7 days</td></tr><tr><td>100 db</td><td>24 minutes/7 days</td></tr><tr><td>110 db</td><td>2 minutes/7 days</td></tr><tr><td>120 db</td><td>14 seconds/7 days</td></tr></table></div></div>'
+      });
+
+      // load workout data
+      d3.csv("data/workoutData.csv", function(error, data) {
       data.forEach(function(d) {
         d['@creationDate'] = formatDate(parseDateTimeZone(d['@creationDate']));
         d['@duration'] = +d['@duration'];
@@ -354,7 +595,7 @@
       updateFilters(data, minDate, maxDate, 'workout', workoutDates);
       updateWorkoutData(data, workoutMaxDate);
     });
-
+    } 
   </script>
 </body>
 </html>

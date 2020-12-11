@@ -26,7 +26,7 @@ function setWorkoutTable(data) {
   });
   // add padding if single row
   if(workoutType.length == 1)
-    workouts = '<tr><td></br></br></br></br></td></tr>' + workouts;
+    workouts = '<tr><td></br></br></td></tr>' + workouts;
   else
     workouts = '<tr><td></br></br></td></tr>' + workouts;
   document.getElementById('workoutTable').innerHTML = workouts;
